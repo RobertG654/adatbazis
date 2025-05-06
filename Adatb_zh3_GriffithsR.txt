@@ -1,0 +1,27 @@
+Elso feladat:
+MATCH (p:Person)-[:ACTED_IN]->(m:Movie)
+WITH m.title AS FilmCim, count(p.name) AS SzereploDb
+RETURN FilmCim, SzereploDb
+ORDER BY SzereploDb DESC
+LIMIT 1
+
+Masodik feladat:
+MATCH (p:Person)-[:DIRECTED]->(m:Movie)
+WHERE m.released < 2000
+WITH p.name As Nev, count(m) AS Db
+WHERE Db > 1
+RETURN Nev, Db
+
+Harmadik Feladat:
+db["users"].find(
+	{email: /\.com/},             
+  {name: 1, email: 1, _id: 0 }
+)
+
+Negyedik feladat:
+db.movies.aggregate([
+ {$unwind: "$genres" },
+ {$group: {_id: "$genres", avgErtekeles: {$avg: "$imdb.rating"}}},
+ {$project: {genre: "$_id", avgErtekeles: 1, _id: 0}},
+ {$sort: {avgErtekeles: -1}}
+])
